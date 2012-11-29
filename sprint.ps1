@@ -1,8 +1,6 @@
 ﻿[string]$script:emailAddress
 [string]$script:apiKey
-
 [string]$script:currentProjectId
-
 [int]$script:currentTaskId
 [string]$script:authToken
 [int]$script:userId
