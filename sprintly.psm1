@@ -13,7 +13,9 @@ function Set-SprintlyCredentials {
     [Parameter(Mandatory=$true)]
     $emailAddress,
     [Parameter(Mandatory=$true)]
-    $apiKey
+    $apiKey,
+    [Parameter(Mandatory=$false)]
+    [switch]$silent
     )
 
 
@@ -24,7 +26,10 @@ function Set-SprintlyCredentials {
     $script:authToken += ConvertTo-Base64($script:emailAddress + ":" + $script:apiKey)
 
     #now we need to find out the id...
-    Write-Output "Sprint.ly Credentials have been set..."
+    if (!$silent)
+    {
+        Write-Output "Sprint.ly Credentials have been set..."
+    }
 }
 
 
