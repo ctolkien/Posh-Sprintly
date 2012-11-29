@@ -1,13 +1,22 @@
 ﻿[string]$script:emailAddress
 [string]$script:apiKey
-[string]$script:currentProjectId
+[int]$global:currentProjectId
 [int]$script:currentTaskId
 [string]$script:authToken
 [int]$script:userId
 $script:currentProject
 $script:currentTask
 
-function Set-SprintlyCredentials([string]$emailAddress, [string]$apiKey) {
+function Set-SprintlyCredentials {
+
+    param(
+    [Parameter(Mandatory=$true)]
+    $emailAddress,
+    [Parameter(Mandatory=$true)]
+    $apiKey
+    )
+
+
     $script:emailAddress = $emailAddress
     $script:apiKey = $apiKey
 
@@ -23,13 +32,32 @@ function Get-SprintlyProjects {
     Invoke-RestMethod "https://sprint.ly/api/products.json" -Headers @{ "authorization" = $authToken }
 }
 
+function Set-SprintlyProject {
+
+    param(
+    [Parameter(Mandatory=$true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
+    [int]$id
+    )
+
+    $content =Invoke-RestMethod ("https://sprint.ly/api/products/" + $id + ".json") -Headers @{ "authorization" =  $authToken }
+    $global:currentProjectId = $id
+    $script:currentProject = $content.name
+
+    #now we also need to find out our user id for this project....
+    $users = ((Invoke-RestMethod ("https://sprint.ly/api/products/" + $id + "/people.json") -Headers @{ "authorization" =  $authToken }) | ? email -EQ $script:emailAddress)
+    $script:userId = $users.id
+    Get-SprintlyNextTask
+    
+}
+
+
 function Get-SprintlyCurrentTask {
     return $script:currentTask
 }
 
 function Get-SprintlyNextTask {
 
-    $task = Invoke-RestMethod ("https://sprint.ly/api/products/" + $script:currentProjectId + "/items.json?limit=1&amp;assigned_to=" + $script:userId) -Headers @{ "authorization" =  $authToken }
+    $task = Invoke-RestMethod ("https://sprint.ly/api/products/" + $global:currentProjectId + "/items.json?limit=1&amp;assigned_to=" + $script:userId) -Headers @{ "authorization" =  $authToken }
     if (!$task) {
         Write-Host "Looks like there's nothing to do...!"
         $script:currentTaskId = $null
@@ -40,20 +68,20 @@ function Get-SprintlyNextTask {
 
     #if this task isn't on the 'inprogress' status, lets upate it
     if ($task.status -eq "backlog") {
-        Invoke-RestMethod  ("https://sprint.ly/api/products/" + $script:currentProjectId + "/items/" + $script:currentTaskId  + ".json") -Headers @{ "authorization" =  $authToken } -Method Post -Body @{ "status" = "in-progress" }
-        $task = Invoke-RestMethod ("https://sprint.ly/api/products/" + $script:currentProjectId + "/items.json?limit=1&amp;assigned_to=" + $script:userId) -Headers @{ "authorization" =  $authToken }
+        Invoke-RestMethod  ("https://sprint.ly/api/products/" + $global:currentProjectId + "/items/" + $script:currentTaskId  + ".json") -Headers @{ "authorization" =  $authToken } -Method Post -Body @{ "status" = "in-progress" }
+        $task = Invoke-RestMethod ("https://sprint.ly/api/products/" + $global:currentProjectId + "/items.json?limit=1&amp;assigned_to=" + $script:userId) -Headers @{ "authorization" =  $authToken }
     }
 
 }
 
 function Add-SprintlyItem([string]$title, [string]$description) {
 
-    Invoke-RestMethod  ("https://sprint.ly/api/products/" + $script:currentProjectId + "/items.json") -Headers @{ "authorization" =  $authToken } -Method Post -Body @{ "status" = "in-progress" }
+    Invoke-RestMethod  ("https://sprint.ly/api/products/" + $global:currentProjectId + "/items.json") -Headers @{ "authorization" =  $authToken } -Method Post -Body @{ "status" = "in-progress" }
 
 }
 
 function Get-SprintlyComments {
-    return Invoke-RestMethod ("https://sprint.ly/api/products/" + $script:currentProjectId + "/items/" + $script:currentTaskId + "/comments.json") -Headers @{ "authorization" =  $authToken }
+    return Invoke-RestMethod ("https://sprint.ly/api/products/" + $global:currentProjectId + "/items/" + $script:currentTaskId + "/comments.json") -Headers @{ "authorization" =  $authToken }
 }
 
 function Get-SprintlyItems {
@@ -64,7 +92,7 @@ function Get-SprintlyItems {
     )
 
     if (!$id) {
-        $id = $script:currentProjectId
+        $id = $global:currentProjectId
     }
 
     return Invoke-RestMethod ("https://sprint.ly/api/products/" + $id + "/items.json") -Headers @{ "authorization" =  $authToken }
@@ -78,12 +106,12 @@ function Get-SprintlyItem {
     $number
     )
 
-    if (!$script:currentProjectId) {
+    if (!$global:currentProjectId) {
         Write-Host "You must set a project first with 'Set-SprintlyProject'"
         return
     }
 
-    return Invoke-RestMethod ("https://sprint.ly/api/products/" + $script:currentProjectId + "/items/" + $number  + ".json") -Headers @{ "authorization" =  $authToken }
+    return Invoke-RestMethod ("https://sprint.ly/api/products/" + $global:currentProjectId + "/items/" + $number  + ".json") -Headers @{ "authorization" =  $authToken }
 }
 
 function Add-SprintlyItem {
@@ -105,27 +133,11 @@ function Add-SprintlyItem {
 
     $body = @{ "type" = $type; "title" = $title; "description" = $description  }
 
-    return Invoke-RestMethod ("https://sprint.ly/api/products/" + $script:currentProjectId + "/items.json") -Headers @{ "authorization" =  $authToken } -Method Post -Body $body
+    return Invoke-RestMethod ("https://sprint.ly/api/products/" + $global:currentProjectId + "/items.json") -Headers @{ "authorization" =  $authToken } -Method Post -Body $body
 
 }
 
-function Set-SprintlyProject {
 
-    param(
-    [Parameter(Mandatory=$true, Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
-    [int]$id
-    )
-
-    $content =Invoke-RestMethod ("https://sprint.ly/api/products/" + $id + ".json") -Headers @{ "authorization" =  $authToken }
-    $script:currentProjectId = $id
-    $script:currentProject = $content.name
-
-    #now we also need to find out our user id for this project....
-    $users = ((Invoke-RestMethod ("https://sprint.ly/api/products/" + $id + "/people.json") -Headers @{ "authorization" =  $authToken }) | ? email -EQ $script:emailAddress)
-    $script:userId = $users.id
-    Get-SprintlyNextTask
-    
-}
 
 function Set-SprintlyTask([int]$taskId) {
 
@@ -133,9 +145,13 @@ function Set-SprintlyTask([int]$taskId) {
     $script:currentTaskId = $taskId
 }
 
+function Remove-Sprintly {
+    $global:currentProjectId =$null
+}
+
 
 function Write-SprintlyPrompt {
-    Write-Host(Get-Location) -NoNewline
+    
     Write-Host(" [") -NoNewline -ForegroundColor Cyan
     Write-Host $script:currentProject -NoNewline
 
@@ -145,12 +161,6 @@ function Write-SprintlyPrompt {
 
     Write-Host("]") -NoNewline -ForegroundColor Cyan
 
-}
-
-function prompt {
-    Write-SprintlyPrompt
-
-    return ">"
 }
 
 
