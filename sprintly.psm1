@@ -6,6 +6,8 @@
 [int]$script:userId
 $script:currentProject
 $script:currentTask
+$script:projects
+$script:projectUsers
 
 function Set-SprintlyCredentials {
 
@@ -34,7 +36,11 @@ function Set-SprintlyCredentials {
 
 
 function Get-SprintlyProjects {
-    Invoke-RestMethod "https://sprint.ly/api/products.json" -Headers @{ "authorization" = $authToken }
+    if (!$script:projects) {
+        $script:projects = Invoke-RestMethod "https://sprint.ly/api/products.json" -Headers @{ "authorization" = $authToken }    
+    }
+    return $script:projects
+    
 }
 
 function Set-SprintlyProject {
@@ -44,13 +50,15 @@ function Set-SprintlyProject {
     [int]$id
     )
 
-    $content =Invoke-RestMethod ("https://sprint.ly/api/products/" + $id + ".json") -Headers @{ "authorization" =  $authToken }
+    $content = Get-SprintlyProjects | ? id -eq $id 
     $global:currentProjectId = $id
-    $script:currentProject = $content.name
+    $script:currentProject = $content
 
     #now we also need to find out our user id for this project....
-    $users = ((Invoke-RestMethod ("https://sprint.ly/api/products/" + $id + "/people.json") -Headers @{ "authorization" =  $authToken }) | ? email -EQ $script:emailAddress)
-    $script:userId = $users.id
+    $script:projectUsers = (Invoke-RestMethod ("https://sprint.ly/api/products/" + $id + "/people.json") -Headers @{ "authorization" =  $authToken })
+    
+    $me =  $script:projectUsers | ? email -EQ $script:emailAddress
+    $script:userId = $me.id
     Get-SprintlyNextTask
     
 }
@@ -158,7 +166,7 @@ function Remove-Sprintly {
 function Write-SprintlyPrompt {
     
     Write-Host(" [") -NoNewline -ForegroundColor Cyan
-    Write-Host $script:currentProject -NoNewline
+    Write-Host ($script:currentProject).name -NoNewline
 
     If([int]$script:currentTaskId) {
         Write-Host(" #" + $script:currentTaskId) -NoNewline    
