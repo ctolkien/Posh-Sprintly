@@ -77,7 +77,7 @@ function Get-SprintlyNextTask {
         $script:currentTask = $null
         return
     }
-    Set-SprintlyTask $task.number
+    Set-SprintlyTask $task
 
     #if this task isn't on the 'inprogress' status, lets upate it
     if ($task.status -eq "backlog") {
@@ -124,7 +124,9 @@ function Get-SprintlyItem {
         return
     }
 
-    return Invoke-RestMethod ("https://sprint.ly/api/products/" + $global:currentProjectId + "/items/" + $number  + ".json") -Headers @{ "authorization" =  $authToken }
+    $script:currentTask = Invoke-RestMethod ("https://sprint.ly/api/products/" + $global:currentProjectId + "/items/" + $number  + ".json") -Headers @{ "authorization" =  $authToken }
+
+    return $script:currentTask
 }
 
 function Add-SprintlyItem {
@@ -152,10 +154,10 @@ function Add-SprintlyItem {
 
 
 
-function Set-SprintlyTask([int]$taskId) {
+function Set-SprintlyTask($task) {
 
-    $script:currentTask =Get-SprintlyItem([int]$taskId)
-    $script:currentTaskId = $taskId
+    $script:currentTask = $task
+    $script:currentTaskId = ($task).number
 }
 
 function Remove-Sprintly {
@@ -168,8 +170,22 @@ function Write-SprintlyPrompt {
     Write-Host(" [") -NoNewline -ForegroundColor Cyan
     Write-Host ($script:currentProject).name -NoNewline
 
-    If([int]$script:currentTaskId) {
-        Write-Host(" #" + $script:currentTaskId) -NoNewline    
+    If($script:currentTask) {
+        Write-Host(" #" + ($script:currentTask).number) -NoNewline    
+        $taskType = ($script:currentTask).type[0].ToString().ToUpper()
+        $taskColour = "Green"
+        
+        if (($script:currentTask).type -eq "task") {
+            $taskColour = "Gray"
+        }
+        elseif (($script:currentTask).type -eq "defect") {
+            $taskColour = "Red"
+        }
+        elseif (($script:currentTask).type -eq "test") {
+            $taskColour = "Blue"
+        }
+
+        Write-Host(" " + $taskType) -NoNewline -ForegroundColor $taskColour
     }
 
     Write-Host("]") -NoNewline -ForegroundColor Cyan
