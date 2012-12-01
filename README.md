@@ -1,14 +1,20 @@
 # Posh-Sprint
 
-A PowerShell module containing a bunch of features to help you work with Sprint.ly.
+A PowerShell module containing a bunch of features to help you work with Sprint.ly. Is expected to be used along side Posh-Git.
 
-## Warning
+### Requirements
 
-This is alpha alpha 0.00001, has just been thrown together...
+Powershell 3.
 
-Is expected to be used along side Posh-Git.
+### What's it do?
 
-Modify your profile to include:
+Extends the PowerShell prompt to include details of the current project and tasks you're working on.
+
+### Install
+
+* Drop this into your modules directory
+
+* Modify your profile to include:
 
     Import-Module sprintly
     Set-SprintlyCredentials "sprintly@emailaddress.com" "sprintly-api-key" -silent
@@ -16,7 +22,7 @@ Modify your profile to include:
 Then down before Posh-Git closes out the prompt:
 
 
-    if ($global:currentProjectId) {
+    if ($global:CurrentSprintlyProject) {
         Write-SprintlyPrompt
     }
 
