@@ -31,6 +31,7 @@ Will keep you moving forward.
 
 * Modify your profile to include:
 
+
     Import-Module sprintly
     Set-SprintlyCredentials "sprintly@emailaddress.com" "sprintly-api-key" -silent
 
