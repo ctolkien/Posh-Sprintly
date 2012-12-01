@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Posh-sprintly : Powershell extensions for Sprint.ly" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Posh-sprintly</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/ctolkien/Posh-Sprintly">View on GitHub</a>
+
+          <h1 id="project_title">Posh-sprintly</h1>
+          <h2 id="project_tagline">Powershell extensions for Sprint.ly</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/ctolkien/Posh-Sprintly/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/ctolkien/Posh-Sprintly/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>Posh-Sprintly</h1>
+
+<p>A PowerShell module containing a bunch of features to help you work with Sprint.ly. Is expected to be used along side Posh-Git.</p>
+
+<h3>Requirements</h3>
+
+<p>Powershell 3.</p>
+
+<h3>What's it do?</h3>
+
+<p>Extends the PowerShell prompt to include details of the current project and tasks you're working on.</p>
+
+<h3>Install</h3>
+
+<ul>
+<li><p>Drop this into your modules directory</p></li>
+<li>
+<p>Modify your profile to include:</p>
+
+<p>Import-Module sprintly
+Set-SprintlyCredentials "<a href="mailto:sprintly@emailaddress.com">sprintly@emailaddress.com</a>" "sprintly-api-key" -silent</p>
+</li>
+</ul><p>Then down before Posh-Git closes out the prompt:</p>
+
+<pre><code>if ($global:CurrentSprintlyProject) {
+    Write-SprintlyPrompt
+}
+</code></pre>
+
+<p>Further docs to come...</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Posh-sprintly maintained by <a href="https://github.com/ctolkien">ctolkien</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
