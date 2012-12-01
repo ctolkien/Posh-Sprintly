@@ -13,7 +13,7 @@ Powershell 3.
 
 Extends the PowerShell prompt to include details of the current project and tasks you're working on. For instance:
 
-    [master] [Posh-Sprintly #34 T]>
+    C:\foo [master] [Posh-Sprintly #34 T]>
 
 [master] is the current branch (this is from Posh-Git). Next up, we display the current project you're working on with sprintly, the current task number and the task type (in this case 'T').
 
