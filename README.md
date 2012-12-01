@@ -47,6 +47,7 @@ It should also work fine with Posh-Hg
 ### How do I use it?
 
 Configure you Sprint.ly credentials (preferable in your profile):
+
     Set-SprintlyCredentials "sprintly@emailaddress.com" "sprintly-api-key" -silent
 
 Next up, we want to set the current project we're working on:
@@ -55,10 +56,13 @@ Next up, we want to set the current project we're working on:
 
 How can I figure out the project number without heading back to the website?
 
-Get-SprintlyProjects will return a collection of all the projects you have access to. This is PowerShell, so you can pipe objects around. For instance:
+    Get-SprintlyProjects 
+
+will return a collection of all the projects you have access to. This is PowerShell, so you can pipe objects around. For instance:
 
     (Get-SprintlyProjects) | ? name -eq "project name" | Set-SprintlyProject
 
+ 
 
     Get-SprintlyItems
 
