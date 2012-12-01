@@ -1,4 +1,4 @@
-# Posh-Sprint
+# Posh-Sprintly
 
 A PowerShell module containing a bunch of features to help you work with Sprint.ly. Is expected to be used along side Posh-Git.
 
