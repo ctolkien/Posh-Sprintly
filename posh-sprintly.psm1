@@ -61,7 +61,7 @@ function Set-SprintlyProject {
 
 
 function Get-SprintlyCurrentTask {
-    return $SprintlyCurrentTask
+    return $script:SprintlyCurrentTask
 }
 
 function Get-SprintlyNextTask {
@@ -74,7 +74,7 @@ function Get-SprintlyNextTask {
     }
     Set-SprintlyTask $task
 
-    #if this task isn't on the 'inprogress' status, lets upate it
+    #if this task isn't on the 'in-progress' status, lets upate it
     if ($task.status -eq "backlog") {
         Invoke-RestMethod  ("https://sprint.ly/api/products/" + ($global:SprintlyCurrentProject).id + "/items/" + ($script:SprintlyCurrentTask).number  + ".json") -Headers @{ "authorization" =  $authToken } -Method Post -Body @{ "status" = "in-progress" }
         $task = Invoke-RestMethod ("https://sprint.ly/api/products/" + ($global:SprintlyCurrentProject).id + "/items.json?limit=1&amp;assigned_to=" + $script:SprintlyUserId) -Headers @{ "authorization" =  $authToken }
