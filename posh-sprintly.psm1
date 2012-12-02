@@ -119,7 +119,7 @@ function Get-SprintlyItem {
         return
     }
 
-    $SprintlyCurrentTask = Invoke-RestMethod ("https://sprint.ly/api/products/" + ($global:SprintlyCurrentProject).id + "/items/" + $number  + ".json") -Headers @{ "authorization" =  $authToken }
+    $script:SprintlyCurrentTask = Invoke-RestMethod ("https://sprint.ly/api/products/" + ($global:SprintlyCurrentProject).id + "/items/" + $number  + ".json") -Headers @{ "authorization" =  $authToken }
 
     return $script:SprintlyCurrentTask
 }
