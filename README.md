@@ -21,7 +21,7 @@ Extends the PowerShell prompt to include details of the current project and task
 
 Once you've configured the credentials and project you're working on, you just need one command:
 
-    Get-SprintlyNextTask
+    Set-SprintlyNextTask
 
 Will keep you moving forward.
 
@@ -53,7 +53,7 @@ Configure you Sprint.ly credentials (preferable in your profile):
 
 Next up, we want to set the current project we're working on:
 
-    Set-SprintlyProject 1234
+    Set-SprintlyCurrentProject 1234
 
 How can I figure out the project number without heading back to the website?
 
@@ -61,23 +61,25 @@ How can I figure out the project number without heading back to the website?
 
 will return a collection of all the projects you have access to. This is PowerShell, so you can pipe objects around. For instance:
 
-    (Get-SprintlyProjects) | ? name -eq "project name" | Set-SprintlyProject
+    Get-SprintlyProjects | ? name -eq "project name" | Set-SprintlyCurrentProject
 
- 
+ Which is effectively, Get the sprintly projects, where the name matches the project I'm after and then pipe it set it as the current project.
 
     Get-SprintlyItems
 
 Will give you a list of all the items in this project (that are in 'current' or backlog)
 
-    Set-SprintlyTask 123
+    Set-SprintlyCurrentItem  -id 123
 
-Will set the current work item, but read on for a better way of doing things.
+This will either take in a task item (normally piped in), or you can specify the id of the item directly. Normally however, you'll use the following:
 
-    Get-SprintlyNextTask
+    Set-SprintlyNextTask
 
 This will find the next thing for you to work on, it will take either the first item in your current list, or if nothing can be found there, it will find the first item in the backlog assigned to you, move it to the current list and then assign it as the current task.
 
     Add-SprintlyItem task "title" "description"
+
+This will add the item to the backlog. task/defect/test will all work, story is likely bugged at the moment.
 
 There's a few other command around, just explore the module.
 
