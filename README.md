@@ -1,8 +1,18 @@
 # Posh-Sprintly
 
-A PowerShell module containing a bunch of features to help you work with Sprint.ly. Is expected to be used along side Posh-Git. I always found it jarring to my workflow to have to head back to the website whilst bashing out my code.
+A PowerShell module containing a bunch of features to help you work with Sprint.ly. It is expected to be used along side Posh-Git.
+I always found it jarring to my workflow to have to head back to the website whilst bashing out my code.
 
-code...code..code... Ready to commit.. now what is the task id? ... head to website... find the task, now back to git to commit... now back to the website to see what's up next... move it to current.. back to coding... and repeat.
+- Code... Code... Code... Ready to commit
+- Head to Sprint.ly website
+- Find the task / task #
+- Back to git, write the commit msg so it references the task
+- Back to Sprint.ly website
+- Find the next item to work on
+- Move it to "current"
+- Repeat..
+
+It's the aim to reduce this down to a minimum and keep you cranking out code without getting distracted.
 
 
 ### Requirements
@@ -23,7 +33,7 @@ Once you've configured the credentials and project you're working on, you just n
 
     Set-SprintlyNextTask
 
-Will keep you moving forward.
+This will keep you moving forward, by grabbing the next available task (moving it to 'current' if it's not already) and updating your prompt.
 
 ### Install
 
@@ -59,7 +69,7 @@ How can I figure out the project number without heading back to the website?
 
     Get-SprintlyProjects 
 
-will return a collection of all the projects you have access to. This is PowerShell, so you can pipe objects around. For instance:
+Will return a collection of all the projects you have access to. This is PowerShell, so you can pipe objects around. For instance:
 
     Get-SprintlyProjects | ? name -eq "project name" | Set-SprintlyCurrentProject
 
@@ -67,7 +77,7 @@ will return a collection of all the projects you have access to. This is PowerSh
 
     Get-SprintlyItems
 
-Will give you a list of all the items in this project (that are in 'current' or backlog)
+Will give you a list of all the items in this project (that are in 'current' or 'backlog').
 
     Set-SprintlyCurrentItem  -id 123
 
