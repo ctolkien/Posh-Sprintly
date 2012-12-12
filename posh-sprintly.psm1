@@ -71,7 +71,7 @@ function Get-SprintlyCurrentItem {
 
 
 function Format-SprintlyItem($item) {
-    return $item | select title, description, status, number, size
+    return $item | select title, description, status, number, type
 }
 
 function Set-SprintlyNextItem {
