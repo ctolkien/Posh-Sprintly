@@ -31,7 +31,7 @@ Extends the PowerShell prompt to include details of the current project and task
 
 Once you've configured the credentials and project you're working on, you just need one command:
 
-    Set-SprintlyNextTask
+    Set-SprintlyNextItem
 
 This will keep you moving forward, by grabbing the next available task (moving it to 'current' if it's not already) and updating your prompt.
 
@@ -83,7 +83,7 @@ Will give you a list of all the items in this project (that are in 'current' or 
 
 This will either take in a task item (normally piped in), or you can specify the id of the item directly. Normally however, you'll use the following:
 
-    Set-SprintlyNextTask
+    Set-SprintlyNextItem
 
 This will find the next thing for you to work on, it will take either the first item in your current list, or if nothing can be found there, it will find the first item in the backlog assigned to you, move it to the current list and then assign it as the current task.
 
