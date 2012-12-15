@@ -89,7 +89,7 @@ This will find the next thing for you to work on, it will take either the first 
 
     Add-SprintlyItem task "title" "description"
 
-This will add the item to the backlog. task/defect/test will all work, story is likely bugged at the moment.
+This will add the item to the backlog. task/defect/test will all work, story is not currently supported (despite appearing in the api)
 
 There's a few other command around, just explore the module.
 
